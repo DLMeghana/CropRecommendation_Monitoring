@@ -3,7 +3,7 @@ import pickle
 import numpy as np
 import pandas
 import sklearn
-crop_recommendation_model_path ='models/SVMClassifier.pkl' 
+crop_recommendation_model_path ='models/LogisticRegression.pkl' 
 crop_recommendation_model = pickle.load(
     open(crop_recommendation_model_path, 'rb'))
 app=Flask(__name__)
