@@ -1,6 +1,11 @@
-from flask import Flask,render_template,url_for
-import requests
+from flask import Flask,render_template,request
+import pickle
 import numpy as np
+import pandas
+import sklearn
+crop_recommendation_model_path ='models/SVMClassifier.pkl' 
+crop_recommendation_model = pickle.load(
+    open(crop_recommendation_model_path, 'rb'))
 app=Flask(__name__)
 @ app.route('/')
 def home():
@@ -45,7 +50,24 @@ def yield_prediction():
 @ app.route('/crop-predict', methods=['POST'])
 def crop_prediction():
     title = 'Harvestify - Crop Recommendation'
-    return render_template('crop-result.html', title=title)
+    N = int(request.form['nitrogen'])
+    P = int(request.form['phosphorous'])
+    K = int(request.form['pottasium'])
+    T=float(request.form['temperature'])
+    ph = float(request.form['ph'])
+    rainfall = float(request.form['rainfall'])
+    Humidity = float(request.form['humidity'])
+    data = [N, P, K, T, Humidity, ph, rainfall]
+    single_pred= np.array(data).reshape(1,-1)
+    prediction=crop_recommendation_model.predict(single_pred)
+
+    crop_dict=["Rice","Maize","Jute","Cotton","Coconut","Papaya","Orange","Apple","Maskmelon","Watermelon","Grapes","Mango","Banana","Pomegranate","Lentil","Blackgram","Mungbean","Mothbeans","Pigeonpeas","Kidneybeans","Chickpea","Coffee"]
+    if prediction[0].title() in crop_dict:
+        crop=prediction[0].title()
+        result="{} is a best crop to be cultivated ".format(crop)
+    else:
+        result="Sorry we are not able to recommend a proper crop for this environment"
+    return render_template('crop-result.html', result=result,title=title)
 
 # render fertilizer recommendation result page
 
