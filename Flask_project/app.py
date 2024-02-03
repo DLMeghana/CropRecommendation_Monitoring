@@ -3,7 +3,7 @@ import pickle
 import numpy as np
 import pandas
 import sklearn
-crop_recommendation_model_path ='models/LogisticRegression.pkl' 
+crop_recommendation_model_path ='models/model.pkl' 
 crop_recommendation_model = pickle.load(
     open(crop_recommendation_model_path, 'rb'))
 app=Flask(__name__)
@@ -47,7 +47,7 @@ def yield_prediction():
 # render crop recommendation result page
 
 
-@ app.route('/crop-predict', methods=['POST'])
+@ app.route('/crop-recommend', methods=['POST'])
 def crop_prediction():
     title = 'Harvestify - Crop Recommendation'
     N = int(request.form['nitrogen'])
@@ -64,7 +64,7 @@ def crop_prediction():
     crop_dict=["Rice","Maize","Jute","Cotton","Coconut","Papaya","Orange","Apple","Maskmelon","Watermelon","Grapes","Mango","Banana","Pomegranate","Lentil","Blackgram","Mungbean","Mothbeans","Pigeonpeas","Kidneybeans","Chickpea","Coffee"]
     if prediction[0].title() in crop_dict:
         crop=prediction[0].title()
-        result="{} is a best crop to be cultivated ".format(crop)
+        result="{}.It is the best crop to be cultivated ".format(crop)
     else:
         result="Sorry we are not able to recommend a proper crop for this environment"
     return render_template('crop-result.html', result=result,title=title)
