@@ -2,7 +2,9 @@
 
 <style>
   html body {
-    background-color: rgb(206, 206, 228);
+    background-image:url('/static/images/multi_colors.avif');
+    background-repeat: no-repeat;
+    background-size:contain;
   }
 </style>
 <!--Form Section-->
@@ -15,70 +17,19 @@
 <div
   style="
     width: 350px;
-    height: 40rem;
+    height: 50rem;
     margin: 0px auto;
     color: black;
     border-radius: 25px;
     padding: 10px 10px;
   "
 >
-  <form method="POST" action="{{ url_for('fert_recommend') }}">
-    <div class="form-group">
-      <label for="Nitrogen" style="font-size: 17px"><b>Nitrogen</b></label>
-      <input
-        type="number"
-        class="form-control"
-        id="Nitrogen"
-        name="nitrogen"
-        placeholder="Enter the value (example:50)"
-        style="font-weight: bold"
-        required
-      />
-    </div>
-    <div class="form-group">
-      <label for="Phosphorous" style="font-size: 17px"
-        ><b>Phosphorous</b></label
-      >
-      <input
-        type="number"
-        class="form-control"
-        id="Phosphorous"
-        name="phosphorous"
-        placeholder="Enter the value (example:50)"
-        style="font-weight: bold"
-        required
-      />
-    </div>
-
-    <div class="form-group">
-      <label for="Pottasium" style="font-size: 17px"><b>Pottasium</b></label>
-      <input
-        type="number"
-        class="form-control"
-        id="Pottasium"
-        name="pottasium"
-        placeholder="Enter the value (example:50)"
-        style="font-weight: bold"
-        required
-      />
-    </div>
-    <!-- <div class="form-group">
-      <label for="ph" style="font-size: 17px"><b>ph level</b></label>
-      <input
-        type="text"
-        class="form-control"
-        id="ph"
-        name="ph"
-        placeholder="Enter the value"
-        style="font-weight: bold"
-        required
-      />
-    </div> -->
+  <form method="POST" action="{{ url_for('yield_predict') }}">
     <div class="form-group">
       <label for="crop" style="font-size: 17px"
         ><b>Crop you want to grow</b></label
       >
-      <select
+    <select
         name="cropname"
         class="form-control"
         id="crop"
@@ -87,29 +38,192 @@
         required
       >
         <option selected>Select crop</option>
-        <option>rice</option>
-        <option>maize</option>
-        <option>chickpea</option>
-        <option>kidneybeans</option>
-        <option>pigeonpeas</option>
-        <option>mothbeans</option>
-        <option>mungbean</option>
-        <option>blackgram</option>
-        <option>lentil</option>
-        <option>pomegranate</option>
-        <option>banana</option>
-        <option>mango</option>
-        <option>grapes</option>
-        <option>watermelon</option>
-        <option>muskmelon</option>
-        <option>apple</option>
-        <option>orange</option>
-        <option>papaya</option>
-        <option>coconut</option>
-        <option>cotton</option>
-        <option>jute</option>
-        <option>coffee</option>
+        <option>Arecanut</option>
+        <option>Arhar/Tur</option>
+        <option>Bajra</option>
+        <option>Banana</option>
+        <option>Barley</option>
+        <option>Black pepper</option>
+        <option>Cardamom</option>
+        <option>Cashewnut</option>
+        <option>Castor seed</option>
+        <option>Coconut</option>
+        <option>Coriander</option>
+        <option>Cotton(lint)</option>
+        <option>Cowpea(Lobia)</option>
+        <option>Dry chillies</option>
+        <option>Garlic</option>
+        <option>Ginger</option>
+        <option>Gram</option>
+        <option>Groundnut</option>
+        <option>Guar seed</option>
+        <option>Horse-gram</option>
+        <option>Jowar</option>
+        <option>Jute</option>
+        <option>Khesari</option>
+        <option>Linseed</option>
+        <option>Maize</option>
+        <option>Masoor</option>
+        <option>Mesta</option>
+        <option>Moong(Green Gram)</option>
+        <option>Moth</option>
+        <option>Niger seed</option>
+        <option>Oilseeds total</option>
+        <option>Onion</option>
+        <option>Other  Rabi pulses</option>
+        <option>Other Cereals</option>
+        <option>Other Kharif pulses</option>
+        <option>Other Summer Pulses</option>
+        <option>Peas & beans (Pulses)</option>
+        <option>Potato</option>
+        <option>Ragi</option>
+        <option>Rapeseed &Mustard</option>
+        <option>Rice</option>
+        <option>Safflower</option>
+        <option>Sannhamp</option>
+        <option>Sesamum</option>
+        <option>Small millets</option>
+        <option>Soyabean</option>
+        <option>Sugarcane</option>
+        <option>Sunflower</option>
+        <option>Sweet potato</option>
+        <option>Tapioca</option>
+        <option>Tobacco</option>
+        <option>Turmeric</option>
+        <option>Urad</option>
+        <option>Wheat</option>
+        <option>other oilseeds</option>
       </select>
+    </div>
+    <div class="form-group">
+      <label for="state" style="font-size: 17px"
+        ><b>State</b></label
+      >
+    <select
+        name="statename"
+        class="form-control"
+        id="state"
+        placeholder="Select a state"
+        style="font-weight: bold"
+        required
+      >
+        <option selected>Select state</option>
+        <option>Andhra Pradesh</option>
+        <option>Arunachal Pradesh</option>
+        <option>Assam</option>
+        <option>Bihar</option>
+        <option>Chhattisgarh</option>
+        <option>Delhi</option>
+        <option>Goa</option>
+        <option>Gujarat</option>
+        <option>Haryana</option>
+        <option>Himachal Pradesh</option>
+        <option>Jammu and Kashmir</option>
+        <option>Jharkhand</option>
+        <option>Karnataka</option>
+        <option>Kerala</option>
+        <option>Madhya Pradesh</option>
+        <option>Maharashtra</option>
+        <option>Manipur</option>
+        <option>Meghalaya</option>
+        <option>Mizoram</option>
+        <option>Nagaland</option>
+        <option>Odisha</option>
+        <option>Puducherry</option>
+        <option>Punjab</option>
+        <option>Sikkim</option>
+        <option>Tamil Nadu</option>
+        <option>Telangana</option>
+        <option>Tripura</option>
+        <option>Uttar Pradesh</option>
+        <option>Uttarakhand</option>
+        <option>West Bengal</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="season" style="font-size: 17px"
+        ><b>Season</b></label
+      >
+    <select
+        name="seasonname"
+        class="form-control"
+        id="season"
+        placeholder="Select Season"
+        style="font-weight: bold"
+        required
+      >
+        <option selected>Select Season</option>
+        <option>Autumn</option>
+        <option>Kharif</option>
+        <option>Rabi</option>
+        <option>Summer</option>
+        <option>Whole Year</option>
+        <option>Winter</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="Area" style="font-size: 17px"><b>Area</b></label>
+      <input
+        type="number"
+        class="form-control"
+        id="Area"
+        name="area"
+        placeholder="Enter the value"
+        style="font-weight: bold"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="Production" style="font-size: 17px"
+        ><b>Production</b></label
+      >
+      <input
+        type="number"
+        class="form-control"
+        id="Production"
+        name="production"
+        placeholder="Enter the value"
+        style="font-weight: bold"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="Annual_Rainfall" style="font-size: 17px"><b>Annual_Rainfall</b></label>
+      <input
+        type="number"
+        class="form-control"
+        id="Annual_Rainfall"
+        name="annual_rainfall"
+        placeholder="Enter the value"
+        style="font-weight: bold"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="Fertilizer_amount" style="font-size: 17px"><b>Fertilizer_amount</b></label>
+      <input
+        type="text"
+        class="form-control"
+        id="Fertilizer_amount"
+        name="fertilizer_amount"
+        placeholder="Enter the value"
+        style="font-weight: bold"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="Pesticide_amount" style="font-size: 17px"><b>Pesticide_amount</b></label>
+      <input
+        type="text"
+        class="form-control"
+        id="Pesticide_amount"
+        name="pesticide_amount"
+        placeholder="Enter the value"
+        style="font-weight: bold"
+        required
+      />
     </div>
 
     <div class="d-flex justify-content-center">
@@ -130,4 +244,5 @@
     </div>
   </form>
 </div>
+
 {% endblock %}
