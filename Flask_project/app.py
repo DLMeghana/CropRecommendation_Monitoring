@@ -25,11 +25,11 @@ def crop_recommend():
 
 # render fertilizer recommendation form page
 
-@ app.route('/fertilizer')
-def fertilizer_recommendation():
-    title = 'Harvestify - Fertilizer Suggestion'
+@ app.route('/weed-detect')
+def Weed_detect():
+    title = 'Agro Check - Weed Detection'
 
-    return render_template('fertilizer.html', title=title)
+    return render_template('weed.html', title=title)
 
 
 @ app.route('/Yield')
@@ -100,6 +100,8 @@ def yield_predict():
     user_input_df = pd.DataFrame([user_input])
     predicted_yield = yield_prediction_model.predict(user_input_df)
     result=f"Predicted yield production: {predicted_yield[0][0]}"
+    if(predicted_yield[0][0]<0):
+        result="Sorry we are unable to predict"
 
     return render_template('yield-result.html',result=result,title=title)
 
@@ -108,12 +110,12 @@ def yield_predict():
 
 @app.route('/disease-predict', methods=['GET', 'POST'])
 def disease_prediction():
-    title = 'Harvestify - Disease Detection'
+    title = 'Agro Check - Disease Detection'
     return render_template('disease.html', title=title)
 
 @app.route('/weed-predict', methods=['GET', 'POST'])
 def weed_detection():
-    title = 'Harvestify - Weed Detection'
+    title = 'Agro Check - Weed Detection'
     return render_template('weed.html', title=title)
 
 
