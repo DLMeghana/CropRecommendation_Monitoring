@@ -1,5 +1,7 @@
 from flask import Flask,render_template,request,Markup
 import pickle
+import os
+import cv2
 import numpy as np
 import pandas as pd
 from utils.disease import disease_dic
@@ -231,51 +233,70 @@ def upload_file():
 
     # Redirect to a page that displays the uploaded image
     return redirect(url_for('display_image', filename=file.filename))
-import cv2
+import torch
+import torchvision
 import numpy as np
+import cv2
 import matplotlib.pyplot as plt
-from keras.models import load_model
 
-# Load the model
-import os
-modelres = load_model("resnet.h5")
-@app.route('/display/<filename>')
+# Define the model architecture
+model = torchvision.models.detection.fasterrcnn_resnet50_fpn(num_classes=3)
+
+# Load the trained model weights
+model.load_state_dict(torch.load('11test_mIou_0.7509999871253967test_loss_0.08900000154972076.pth', map_location=torch.device('cpu')))
+model.eval()
+
+# Define class names
+names = {'0': 'crop', '1': 'weed'}
+import random
+import string
+@app.route('/weed_result-<filename>')
 def display_image(filename):
-    image_path = os.path.join(os.getcwd(), 'static/uploads/'+filename)
+    image_path = os.path.join(os.path.dirname(__file__), 'static', 'uploads', filename)
 
     # Check if the file exists
     if not os.path.exists(image_path):
         return 'Image not found'
 
     # Read the image using OpenCV
-    image = cv2.imread(image_path)
+    src_img = plt.imread(image_path)
+    img = cv2.cvtColor(src_img, cv2.COLOR_BGR2RGB)
 
-    # Resize the image to match the input size expected by the model
-    shape = 224  # Assuming the model expects input images of size 224x224
-    image_resized = cv2.resize(image, (shape, shape))
+    # Convert image to tensor
+    img_tensor = torch.from_numpy(img/255.).permute(2, 0, 1).float()
 
-    # Reshape the image to match the input shape expected by the model
-    image_reshaped = np.reshape(image_resized, (1, shape, shape, 3))
+    # Perform inference
+    out = model(torch.unsqueeze(img_tensor, dim=0))
 
-    # Make predictions using the loaded model
-    pred = modelres.predict(image_reshaped)
+    # Extract bounding boxes, labels, and scores
+    boxes = out[0]['boxes'].cpu().detach().numpy().astype(int)
+    labels = out[0]['labels'].cpu().detach().numpy()
+    scores = out[0]['scores'].cpu().detach().numpy()
 
-    # Extract bounding box predictions
-    bbox_predictions = pred[1][0]
+    # Convert src_img to cv::UMat object
+    src_img_um = cv2.UMat(src_img)
 
-    # Get coordinates of the bounding box
-    startX = int(bbox_predictions[0] * shape)
-    startY = int(bbox_predictions[1] * shape)
-    endX = int(bbox_predictions[2] * shape)
-    endY = int(bbox_predictions[3] * shape)
+    # Draw bounding boxes and labels
+    for idx in range(boxes.shape[0]):
+        if scores[idx] >= 0.8:
+            x1, y1, x2, y2 = boxes[idx][0], boxes[idx][1], boxes[idx][2], boxes[idx][3]
+            name = names.get(str(labels[idx].item()))
+            cv2.rectangle(src_img_um, (x1, y1), (x2, y2), (255, 0, 0), thickness=2)
+            cv2.putText(src_img_um, text=name, org=(x1, y1+10), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                        fontScale=0.5, thickness=1, lineType=cv2.LINE_AA, color=(0, 0, 255))
 
-    # Draw the bounding box on the image
-    cv2.rectangle(image_resized, (startX, startY), (endX, endY), (0, 255, 0), 2)
+    # Convert src_img_um back to NumPy array for display
+    src_img = src_img_um.get()
 
-    # Save the image with the bounding box
-    cv2.imwrite("./static/uploads/prediction.jpeg", image_resized)
+    # Display the annotated image
+    #plt.imshow(src_img)
+    #plt.show()
+    cv2.imwrite("./static/uploads/prediction.jpeg", src_img)
 
-    return render_template('display.html', filename="prediction.jpeg")
+    #return render_template('weed-result.html', filename="prediction.jpeg")
+    random_query_param = ''.join(random.choices(string.ascii_lowercase + string.digits, k=8))
+
+    return render_template('weed-result.html', filename="prediction.jpeg", random_query_param=random_query_param)
 # ===============================================================================================
 if __name__ == '__main__':
     app.run(debug=True)
