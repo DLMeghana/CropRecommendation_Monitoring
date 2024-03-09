@@ -11,11 +11,11 @@ html body {
   
 }
 </style>
-<div class="container py-2 mx-auto my-50 h-10 " style="margin: 9rem;border-radius:5px">
+<div class="container py-2 mx-auto my-30 h-5 " style="margin: 9rem;border-radius:5px">
   <div class="row">
       <div class="col-sm py-2 py-md-3">
           <div class="card card-body" style="justify-content: center; background-image:linear-gradient(to bottom right,rgb(158, 225, 244),white,rgb(158, 225, 244))">
-            <img src="{{ url_for('static', filename='uploads/' + filename) }}" alt="Uploaded Image">
+            <img src="{{ url_for('static', filename='uploads/' + filename) }}?{{ random_query_param }}" alt="Uploaded Image">
           </div>
       </div>
   </div>
