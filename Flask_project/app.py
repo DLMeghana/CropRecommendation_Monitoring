@@ -12,6 +12,7 @@ from torchvision import transforms
 from PIL import Image
 from utils.model import ResNet9
 import sklearn
+from sklearn.preprocessing import MinMaxScaler
 from flask import Flask, render_template, request, redirect, url_for
 
 #--
@@ -177,13 +178,13 @@ def yield_predict():
         state_name=st[state_name]
     if season_name in s:
         season_name=s[season_name]
-    user_input=[area,Production,Annual_rainfall,Fertilizer,Pesticide,crop_name,state_name,season_name]
-    user_input_df = pd.DataFrame([user_input])
-    predicted_yield = yield_prediction_model.predict(user_input_df)
-    result=f"Predicted yield production: {predicted_yield[0][0]} per unit area"
-    if(predicted_yield[0][0]<0):
-        result="Sorry we are unable to predict"
-
+    user_input=[crop_name,season_name,state_name,area,Production,Annual_rainfall,Fertilizer,Pesticide]
+    user_input_df=pd.DataFrame(user_input)
+    scaler=MinMaxScaler()
+    input_data_scaled=scaler.fit_transform(user_input_df)
+    input_data_scaled=input_data_scaled.transpose()
+    predicted_yield = yield_prediction_model.predict(input_data_scaled)
+    result="Predicted yield production:%.3f" %predicted_yield[0][0]
     return render_template('yield-result.html',result=result,title=title)
 
 # render disease prediction result page
